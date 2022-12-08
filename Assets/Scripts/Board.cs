@@ -2,7 +2,9 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class Board : MonoBehaviour
-{
+{   
+    [SerializeField] GameOver gameOver;
+    
     public Tilemap tilemap { get; private set; }
     public Piece activePiece { get; private set; }
     public TetrominoData[] tetrominoes;
@@ -29,7 +31,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void Start()
     {
         SpawnPiece();
     }
@@ -44,13 +46,8 @@ public class Board : MonoBehaviour
         if (IsValidPosition(this.activePiece, this.spawnPosition)) {
             Set(this.activePiece);
         } else {
-            GameOver();
+            gameOver.GoToGameOverScreen();
         }
-    }
-
-    private void GameOver()
-    {
-        this.tilemap.ClearAllTiles();
     }
 
     public void Set(Piece piece)

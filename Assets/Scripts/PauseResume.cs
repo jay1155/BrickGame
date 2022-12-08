@@ -1,20 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+ 
 public class PauseResume : MonoBehaviour
 {
+ 
     public GameObject PauseScreen;
-    //public GameObject PauseButton;
-
+    public GameObject PauseButton;
+    public GameObject quitConfirmationScreen;
+ 
     bool GamePaused;
-
+ 
+ 
     // Start is called before the first frame update
     void Start()
     {
         GamePaused = false;
     }
-
+ 
     // Update is called once per frame
     void Update()
     {
@@ -23,18 +26,38 @@ public class PauseResume : MonoBehaviour
         else
             Time.timeScale = 1;
     }
-
+ 
     public void PauseGame()
     {
         GamePaused = true;
         PauseScreen.SetActive(true);
-        //PauseButton.SetActive(false);
+        PauseButton.SetActive(false);
     }
-
+ 
     public void ResumeGame()
     {
         GamePaused = false;
         PauseScreen.SetActive(false);
-        //PauseButton.SetActive(true);
+        PauseButton.SetActive(true);
     }
+
+    public void PauseGameOver()
+    {
+        GamePaused = true;
+    }
+
+    public void ResumeGameOver()
+    {
+        GamePaused = false;
+    }
+
+    public void GoToConfirmationScreen()
+    {
+        PauseScreen.SetActive(false);
+        quitConfirmationScreen.SetActive(true);
+    }
+
+
+
+
 }

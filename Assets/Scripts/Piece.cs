@@ -10,9 +10,11 @@ public class Piece : MonoBehaviour
 
     public float stepDelay = 1f;
     public float lockDelay = 0.5f;
+    public float downKeyDelay = 0.12f;
 
     private float stepTime;
     private float lockTime;
+    private float lastDownKeyTime;
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
@@ -22,6 +24,7 @@ public class Piece : MonoBehaviour
         this.rotationIndex = 0;
         this.stepTime = Time.time + this.stepDelay;
         this.lockTime = 0f;
+        this.lastDownKeyTime = Time.time;
 
         if (this.cells == null) {
             this.cells = new Vector3Int[data.cells.Length];
@@ -34,35 +37,42 @@ public class Piece : MonoBehaviour
 
     private void Update()
     {
-        this.board.Clear(this);
+        if (Time.timeScale != 0)
+        {
+            this.board.Clear(this);
 
-        this.lockTime += Time.deltaTime;
+            this.lockTime += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.Q)) {
-            Rotate(-1);
-        } else if (Input.GetKeyDown(KeyCode.E)) {
-            Rotate(1);
+            if (Input.GetKeyDown(KeyCode.Q)) {
+                Rotate(-1);
+            } else if (Input.GetKeyDown(KeyCode.E)) {
+                Rotate(1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.A)) {
+                Move(Vector2Int.left);
+            } else if (Input.GetKeyDown(KeyCode.D)) {
+                Move(Vector2Int.right);
+            }
+            // use GetKey instead of GetKeyDown for 'holding downkey' case
+            if (Input.GetKey(KeyCode.S)) {
+                if (Time.time - lastDownKeyTime > downKeyDelay) {
+                    Move(Vector2Int.down);
+                    lastDownKeyTime = Time.time;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                HardDrop();
+            }
+
+            if (Time.time >= this.stepTime) {
+                Step();
+            }
+
+            this.board.Set(this);
         }
-
-        if (Input.GetKeyDown(KeyCode.A)) {
-            Move(Vector2Int.left);
-        } else if (Input.GetKeyDown(KeyCode.D)) {
-            Move(Vector2Int.right);
-        }
-
-        if (Input.GetKeyDown(KeyCode.S)) {
-            Move(Vector2Int.down);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            HardDrop();
-        }
-
-        if (Time.time >= this.stepTime) {
-            Step();
-        }
-
-        this.board.Set(this);
+        
     }
 
 
